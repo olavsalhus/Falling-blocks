@@ -28,6 +28,7 @@
 		6875B49C23C1870C00887A99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6875B4A123C1870C00887A99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		68DB657B23CA674900BAB642 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		68E6F0A323CA940E005D478E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +45,7 @@
 		6875B48323C1870200887A99 = {
 			isa = PBXGroup;
 			children = (
+				68E6F0A323CA940E005D478E /* README.md */,
 				6875B48E23C1870200887A99 /* Falling blocks */,
 				6875B48D23C1870200887A99 /* Products */,
 			);
