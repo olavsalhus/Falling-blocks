@@ -31,3 +31,7 @@ Feel free to contribute :)
 
 ### Known bugs
 - Rotating a line next to a vertical line can cause strange behaviour
+
+### Goal
+
+<img alt="Tetris effect" src="https://mk0uploadvrcom4bcwhj.kinstacdn.com/wp-content/uploads/2019/07/tetris-effect-vr-2.jpg" />
