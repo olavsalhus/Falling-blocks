@@ -17,6 +17,10 @@ The game is over if there is no space for the next brick and the game restarts.
 ### Todo list
 Feel free to contribute :)
 - Pause menu with settings (turn off preview and ghost brick)
+- Hard drop sensitivity
+- Graceful landing (extra time before landing)
+- Pivot rotate
+- Ghost brick brighter
 - Cleanup and refactor code for readability
 - Game center leaderboards
 - Pentomino game mode
