@@ -7,12 +7,23 @@ The game is over if there is no space for the next brick and the game restarts.
 
 <img src="https://raw.githubusercontent.com/olavsalhus/Falling-blocks/master/screenshot.png" alt="screenshot" width="250"/>
 
-Features:
+### Features:
 
-Freware with no ads on iPhone and iPad
+- Freware with no ads on iPhone and iPad
+- iOS 9+ support
+- Dark theme
+- Classic tetris gameplay
 
-iOS 9+ support
+### Todo list
+Feel free to contribute :)
+- Pause menu with settings (turn off preview and ghost brick)
+- Cleanup and refactor code for readability
+- Game center leaderboards
+- Pentomino game mode
+- Visual effects
+- Music
+- Apple Watch and macOS support
+- Rename to Falling tetrominos if App store allows it
 
-Dark theme
-
-Classic tetris gameplay
+### Known bugs
+- Rotating a line next to a vertical line can cause strange behaviour
