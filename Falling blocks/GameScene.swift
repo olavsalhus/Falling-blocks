@@ -81,6 +81,49 @@ class GameScene: SKScene {
          [1, 1, 0]]
     ]
     
+    /*
+    // Also uses tetrominos and pentominoes to make it easier
+    var pentominos =
+"""
+X    |XX
+
+XX   |XXX
+X    |
+
+XXXXX| X
+     |XXX
+     | X
+
+XXX  |XXX
+X X  | X
+     | X
+
+XXX  |X
+X    |XX
+X    | XX
+
+XXXX |X
+X    |XXXX
+
+XX   |XX
+XXX  |XXX
+
+ XX  |XX
+XX   | XX
+ X   | X
+
+XXXX | X
+ X   |XXXX
+
+XX   |  XX
+ XXX |XXX
+
+
+ XX  |XX
+ X   | X
+XX   | XX
+"""
+    */
     var shapeColors : [UIColor] = [.yellow, .cyan, .orange, .blue, .purple, .red, .green]
     
     var rotation = 0
@@ -554,11 +597,9 @@ class GameScene: SKScene {
         let delay = CGFloat(DispatchTime.now().uptimeNanoseconds - timeSinceTouchBegan) / 10e9
         let avgPixelsPerSecond = dySinceLast / delay
         
-        if (avgPixelsPerSecond < -(gridsize * 250.0)) {
+        if (avgPixelsPerSecond < -(gridsize * 250.0) && abs(dy) > 1) {
             timeSinceTouchBegan = DispatchTime.now().uptimeNanoseconds
-            semaphore.wait()
             while (down() == false) {}
-            semaphore.signal()
             return
         }
         
