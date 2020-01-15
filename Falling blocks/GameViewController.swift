@@ -3,7 +3,6 @@
 //  Blocks falling
 //
 //  Created by Olav Salhus on 05/01/2020.
-//  Copyright © 2020 Olav Salhus. All rights reserved.
 //
 
 import UIKit

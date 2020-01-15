@@ -1,20 +1,22 @@
 //
 //  GameScene.swift
 //
-//  Created by Olav Salhus on 2020-01-05.
-//  Copyright © 2019 Olav Salhus. All rights reserved.
+//  Created by Olav Salhus on 2010-01-05.
 //
 
 import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene {
-    var x = 4
-    var y = 18
-    var board             = Array(repeating: Array(repeating: SKShapeNode(), count: 20), count: 10)
-    var boardIsBrickSolid = Array(repeating: Array(repeating:          false, count: 20), count: 10)
-    var nextBrickPreviewBoard = Array(repeating: Array(repeating: SKShapeNode(), count: 4), count: 4)
-    var swapBrickPreviewBoard = Array(repeating: Array(repeating: SKShapeNode(), count: 4), count: 4)
+    
+    let boardWidth = 10
+    let boardHeight = 20
+    var x = Int(0)
+    var y = Int(0)
+    var board : [[SKShapeNode]] = [[]]
+    var boardIsBrickSolid : [[Bool]] = [[]]
+    var nextBrickPreviewBoard : [[SKShapeNode]] = [[]]
+    var swapBrickPreviewBoard : [[SKShapeNode]] = [[]]
     
     var timeIntervals = [
         43.0 / 60.0,
@@ -40,6 +42,7 @@ class GameScene: SKScene {
     var linesCleared = 0
     func addScore(_ addedScore : Int) {
         score += addedScore
+        scoreLabel.text = "\(score)"
         if score > highscore {
             UserDefaults.standard.set(score, forKey: "highscore")
             highscore = score
@@ -47,10 +50,10 @@ class GameScene: SKScene {
         if (guiOption == .ShowScore || guiOption == .ShowScoreAndPreview) {
             printLabel("\(score)")
         }
-        nextLevel()
+        updateLevel()
     }
     
-    func nextLevel() {
+    func updateLevel() {
         let level = score / 1000
         let interval = timeIntervals[level > timeIntervals.count ? (timeIntervals.count - 1) : level]
         timer.invalidate()
@@ -63,16 +66,21 @@ class GameScene: SKScene {
         [[1, 1],
          [1, 1]],
         
-        [[1, 1, 1, 1]],
+        [[0, 0, 0, 0],
+         [1, 1, 1, 1],
+         [0, 0, 0, 0]],
         
         [[0, 0, 1],
-         [1, 1, 1]],
+         [1, 1, 1],
+         [0, 0, 0]],
         
-        [[1, 1, 1],
+        [[0, 0, 0],
+         [1, 1, 1],
          [0, 0, 1]],
         
         [[0, 1, 0],
-         [1, 1, 1]],
+         [1, 1, 1],
+         [0, 0, 0]],
         
         [[1, 1, 0],
          [0, 1, 1]],
@@ -81,49 +89,83 @@ class GameScene: SKScene {
          [1, 1, 0]]
     ]
     
-    /*
-    // Also uses tetrominos and pentominoes to make it easier
+var tetrominos = """
+--------
+        
+[][][][]
+        
+--------
+    []
+[][][]
+        
+--------
+        
+[][][]
+    []
+--------
+[][]
+  [][]
+--------
+  [][]
+[][]
+--------
+[][]
+[][]
+--------
+  []
+[][][]
+        
+--------
+"""
+    
+    // Pentominos mode also uses smaller bricks to make it easier
     var pentominos =
 """
-X    |XX
-
-XX   |XXX
-X    |
-
-XXXXX| X
-     |XXX
-     | X
-
-XXX  |XXX
-X X  | X
-     | X
-
-XXX  |X
-X    |XX
-X    | XX
-
-XXXX |X
-X    |XXXX
-
-XX   |XX
-XXX  |XXX
-
- XX  |XX
-XX   | XX
- X   | X
-
-XXXX | X
- X   |XXXX
-
-XX   |  XX
- XXX |XXX
-
-
- XX  |XX
- X   | X
-XX   | XX
+----------|----------
+[]        |[][]
+----------|----------
+          |
+  [][]    |[][][]
+  []      |
+----------|----------
+          |  []
+          |[][][]
+[][][][][]|  []
+          |----------
+          |[][][]
+----------|  []
+          |  []
+[][][]    |----------
+[]  []    |[]
+----------|[][]
+[][][]    |  [][]
+[]        |----------
+[]        |[]
+----------|[][][][]
+          |
+[][][][]  |----------
+[]        |[][]
+----------|[][][]
+[][]      |----------
+[][][]    |[][]
+----------|  [][]
+  [][]    |  []
+[][]      |----------
+  []      |  []
+----------|[][][][]
+          |
+[][][][]  |----------
+  []      |    [][]
+----------|[][][]
+[][]      |----------
+  [][][]  |[][]
+----------|  []
+  [][]    |  [][]
+  []      |----------
+[][]      |
+----------|
 """
-    */
+    
     var shapeColors : [UIColor] = [.yellow, .cyan, .orange, .blue, .purple, .red, .green]
     
     var rotation = 0
@@ -143,7 +185,7 @@ XX   | XX
         if (currentShape == -1) {
             currentShape = getNextShape()
         }
-        (x, y) = (4, 17)
+        (x, y) = (Int(boardWidth / 2) - 2, boardHeight - 2)
         if (isShapeColliding()) {
             gameOver()
             return
@@ -162,6 +204,8 @@ XX   | XX
         }
         clearBoard()
         score = 0
+        updateLevel()
+        scoreLabel.text = "0"
     }
     var nodesToRemove :  [SKNode] = []
     @objc func removeLabels() {
@@ -203,23 +247,33 @@ XX   | XX
         
         Timer.scheduledTimer(timeInterval: secondsToShow, target: self, selector: #selector(self.removeLabels), userInfo: nil, repeats: false)
     }
+    
+    var scoreLabel = SKLabelNode(text: "0")
+    
     override func sceneDidLoad() {
+        x = Int(boardWidth / 2) - 2
+        y = boardHeight - 2
+        board             = Array(repeating: Array(repeating: SKShapeNode(), count: boardHeight), count: boardWidth)
+        boardIsBrickSolid = Array(repeating: Array(repeating:          false, count: boardHeight), count: boardWidth)
+        nextBrickPreviewBoard = Array(repeating: Array(repeating: SKShapeNode(), count: 5), count: 5)
+        swapBrickPreviewBoard = Array(repeating: Array(repeating: SKShapeNode(), count: 5), count: 5)
         
-        
+        startx = Int(boardWidth / 2) - 2
+        starty = boardHeight - 2
         
         // Create board
         backgroundColor = .black
         let w = size.width
         let h = size.height
-        gridsize = min(w / 10.0, h / 20.0)
+        gridsize = min(w / CGFloat(boardWidth), h / CGFloat(boardHeight))
         let brickMargin : CGFloat = 0.1
         let brickInnerSizeRatio : CGFloat = (1.0 - brickMargin * 2.0)
         for (x, line) in board.enumerated() {
             for (y, _) in line.enumerated() {
                 
                 board[x][y] = SKShapeNode(rect: CGRect(
-                        x: gridsize * (CGFloat(x) + brickMargin - 5.0),
-                        y: gridsize * (CGFloat(y) + brickMargin - 10.0),
+                        x: gridsize * (CGFloat(x) + brickMargin - CGFloat(boardWidth) / 2.0),
+                        y: gridsize * (CGFloat(y) + brickMargin - CGFloat(boardHeight) / 2.0),
                         width : gridsize * brickInnerSizeRatio,
                         height: gridsize * brickInnerSizeRatio
                     )
@@ -232,32 +286,32 @@ XX   | XX
         }
         
         // Create preview board
+        
+        let offset = brickMargin - CGFloat(nextBrickPreviewBoard.count)
         let previewGridSize = gridsize / 2
         for (x, line) in nextBrickPreviewBoard.enumerated() {
             for (y, _) in line.enumerated() {
                 
                 nextBrickPreviewBoard[x][y] = SKShapeNode(rect: CGRect(
-                        x: previewGridSize * (CGFloat(x) + brickMargin + 6),
-                        y: previewGridSize * (CGFloat(y) + brickMargin + 16),
+                        x: previewGridSize * (CGFloat(x) + CGFloat(boardWidth) + offset),
+                        y: previewGridSize * (CGFloat(y) + CGFloat(boardHeight) + offset),
                         width : previewGridSize * brickInnerSizeRatio,
                         height: previewGridSize * brickInnerSizeRatio
                     )
                 )
                 nextBrickPreviewBoard[x][y].lineWidth = previewGridSize * 0.1
-                board[x][y].strokeColor = boardBackgroundColor
                 nextBrickPreviewBoard[x][y].isHidden = true
                 
                 
                 addChild(nextBrickPreviewBoard[x][y])
             }
         }
-        
         for (x, line) in swapBrickPreviewBoard.enumerated() {
             for (y, _) in line.enumerated() {
                 
                 swapBrickPreviewBoard[x][y] = SKShapeNode(rect: CGRect(
-                        x: previewGridSize * (CGFloat(x) + brickMargin - 10),
-                        y: previewGridSize * (CGFloat(y) + brickMargin + 16),
+                        x: previewGridSize * (CGFloat(x) - CGFloat(boardWidth)),
+                        y: previewGridSize * (CGFloat(y) + CGFloat(boardHeight) + offset),
                         width : previewGridSize * brickInnerSizeRatio,
                         height: previewGridSize * brickInnerSizeRatio
                     )
@@ -274,7 +328,14 @@ XX   | XX
         previewShapeLanding(true)
         
         // Start the first level
-        nextLevel()
+        updateLevel()
+        
+        // Show score
+        scoreLabel.position = CGPoint(x: CGFloat(boardWidth) - size.width / 2, y: size.height / 2.0 - CGFloat(boardWidth))
+        scoreLabel.fontSize = 52
+        scoreLabel.verticalAlignmentMode = .top
+        scoreLabel.horizontalAlignmentMode = .left
+        addChild(scoreLabel)
         
     }
     
@@ -287,13 +348,14 @@ XX   | XX
     }
     
     func isOutOfBounds(x: Int, y: Int, ignoreTop: Bool = false) -> Bool {
-        if ignoreTop && (y >= 20) {
-            return !(0 <= x && x < 10)
+        if ignoreTop && (y >= boardHeight) {
+            return !(0 <= x && x < boardWidth)
         }
-        return !(0 <= x && x < 10 && 0 <= y && y < 20) || boardIsBrickSolid[x][y]
+        return !(0 <= x && x < boardWidth && 0 <= y && y < boardHeight) || boardIsBrickSolid[x][y]
     }
     
     func isShapeColliding() -> Bool {
+        
         for (dx, line) in getCurrentShape().enumerated() {
             for (dy, block) in line.enumerated() {
                 if (block == 1 && isOutOfBounds(x: x + dx, y: y + dy, ignoreTop: true)) {
@@ -310,6 +372,7 @@ XX   | XX
     var xSensitivity = CGFloat(60); var ySensitivity = CGFloat(30)
     
     func removeLineIfNeeded(i: Int) {
+        if (0 > i || i >= boardHeight) { return }
         for (_x, line) in board.enumerated() {
             for (_y, _) in line.enumerated() {
                 if (_y == i) {
@@ -323,7 +386,7 @@ XX   | XX
         for (_x, line) in board.enumerated() {
             for (_y, _) in line.enumerated() {
                 if (i <= _y) {
-                    if  (_y == 19) {
+                    if  (_y == (boardHeight - 1)) {
                         board[_x][_y].strokeColor = boardBackgroundColor
                         boardIsBrickSolid[_x][_y] = false
                     } else {
@@ -441,17 +504,8 @@ XX   | XX
             }
             currentShape = getNextShape()
             justSwapped = false
-            var maxBlockHeight = 0
-            
-            for line in board {
-                for (y, _) in line.enumerated() {
-                    if ((y > maxBlockHeight) && boardIsBrickSolid[x][y]) {
-                        maxBlockHeight = y
-                    }
-                }
-            }
             //previewShapeLanding(false)
-            x = 4; y = 18
+            x = Int(boardWidth / 2) - 2; y = boardHeight - 2
             if (isShapeColliding()) {
                 gameOver()
             }
@@ -474,7 +528,7 @@ XX   | XX
         var h = CGFloat(); var s = CGFloat(); var v = CGFloat(); var a = CGFloat()
         getCurrentColor().getHue(&h, saturation: &s, brightness: &v, alpha: &a)
         
-        let darkerColor = colored ? UIColor(hue: h, saturation: s, brightness: v / 3, alpha: a) : boardBackgroundColor
+        let darkerColor = colored ? UIColor(hue: h, saturation: s, brightness: v * 0.5, alpha: a) : boardBackgroundColor
         drawShape(color: darkerColor, solidify: false)
         y = oldY
     }
@@ -495,8 +549,8 @@ XX   | XX
         return false
     }
     
-    var startx = 5
-    var starty = 17
+    var startx = Int(0)
+    var starty = Int(0)
     
     func rotate(_ steps: Int = 1) {
         previewShapeLanding(false)
@@ -555,20 +609,21 @@ XX   | XX
         var p = (touches.first?.location(in: self))!
         p.x -= startp.x; p.y -= startp.y
         let delay = CGFloat(DispatchTime.now().uptimeNanoseconds - timeSinceTouchBegan) / 10e9
+        
+        let dx = Int(p.x / xSensitivity)
+        let dy = Int(-p.y / ySensitivity)
+        
         let avgPixelsPerSecond = p.y / delay
         
-        if (avgPixelsPerSecond < -(gridsize * 250.0)) {
+        if (avgPixelsPerSecond < -(gridsize * 350.0) && dx == 0 && abs(dy) > 3) {
             timeSinceTouchBegan = DispatchTime.now().uptimeNanoseconds
             while (down() == false) {}
             return
         }
         
-        
-        
-        let dx = Int(p.x / xSensitivity); let dy = Int(-p.y / ySensitivity)
         if (abs(p.x) + abs(-p.y) > 25) { touchMovement = true }
-        let nx = min(max(startx + dx, 0), 9)
-        let ny = min(max(starty - dy, 0), 19)
+        let nx = startx + dx
+        let ny = starty - dy
         
         while (x < nx) {
             if (move(dx:  1)) { break }
