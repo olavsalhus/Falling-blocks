@@ -343,7 +343,7 @@ var tetrominos = """
     
     @objc func timedEvent() {
         semaphore.wait()
-        _ = down()
+        _ = down(gracefulLanding: true)
         semaphore.signal()
     }
     
@@ -489,14 +489,22 @@ var tetrominos = """
         currentShape = nextShape
         return nextShape
     }
-    
-    @objc func down() -> Bool {
+    var timeOfLastDown = DispatchTime.now()
+    @objc func down(gracefulLanding: Bool = false) -> Bool {
         _ = drawShape(color: boardBackgroundColor)
         
         y -= 1
         
         if (isShapeColliding()) {
             y += 1
+            
+            if gracefulLanding {
+                let secondsSinceLastDown = Double(DispatchTime.now().uptimeNanoseconds - timeOfLastDown.uptimeNanoseconds) / 1_000_000_000
+                if secondsSinceLastDown < 1 {
+                    _ = drawShape(color: getCurrentColor())
+                    return false
+                }
+            }
             _ = drawShape(color: getCurrentColor(), solidify: true)
             let height = getCurrentShape()[0].count
             for i in stride(from: y + height - 1, through: y, by: -1) {
@@ -517,6 +525,7 @@ var tetrominos = """
         }
         
         _ = drawShape(color: getCurrentColor())
+        timeOfLastDown = DispatchTime.now()
         return false
     }
     
