@@ -8,7 +8,6 @@ The game is over if there is no space for the next brick and the game restarts.
 <img src="https://raw.githubusercontent.com/olavsalhus/Falling-blocks/master/screenshot.png" alt="screenshot" width="250"/>
 
 ### Features:
-
 - Freware with no ads on iPhone and iPad
 - iOS 9+ support
 - Dark theme
@@ -17,10 +16,6 @@ The game is over if there is no space for the next brick and the game restarts.
 ### Todo list
 Feel free to contribute :)
 - Pause menu with settings (turn off preview and ghost brick)
-- Hard drop sensitivity
-- Graceful landing (extra time before landing)
-- Pivot rotate
-- Ghost brick brighter
 - Cleanup and refactor code for readability
 - Game center leaderboards
 - Pentomino game mode
