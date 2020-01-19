@@ -638,7 +638,7 @@ var tetrominos = """
         
         let avgPixelsPerSecond = p.y / delay
         
-        if (avgPixelsPerSecond < -(gridsize * 350.0) && dx == 0 && abs(dy) > 3) {
+        if avgPixelsPerSecond < -(gridsize * 350.0) && abs(dy) > 2 && abs(dx) == 0 {
             timeSinceTouchBegan = DispatchTime.now().uptimeNanoseconds
             while (down() == false) {}
             return
@@ -675,7 +675,7 @@ var tetrominos = """
         let delay = CGFloat(DispatchTime.now().uptimeNanoseconds - timeSinceTouchBegan) / 10e9
         let avgPixelsPerSecond = dySinceLast / delay
         
-        if (avgPixelsPerSecond < -(gridsize * 250.0) && abs(dy) > 1) && abs(dx) == 0 {
+        if avgPixelsPerSecond < -(gridsize * 350.0) && abs(dy) > 2 && abs(dx) == 0 {
             timeSinceTouchBegan = DispatchTime.now().uptimeNanoseconds
             while (down() == false) {}
             return
