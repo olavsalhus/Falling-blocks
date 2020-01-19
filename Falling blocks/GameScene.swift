@@ -510,6 +510,7 @@ var tetrominos = """
             for i in stride(from: y + height - 1, through: y, by: -1) {
                 removeLineIfNeeded(i: i)
             }
+            rotation = 0
             currentShape = getNextShape()
             justSwapped = false
             //previewShapeLanding(false)
@@ -542,13 +543,19 @@ var tetrominos = """
         y = oldY
     }
     
-    func move(dx: Int) -> Bool {
-        drawShape(color: boardBackgroundColor)
-        previewShapeLanding(false)
-        defer {
-            previewShapeLanding(true)
-            drawShape(color: getCurrentColor())
+    func move(dx: Int, draw: Bool = true) -> Bool {
+        if draw {
+            drawShape(color: boardBackgroundColor)
+            previewShapeLanding(false)
+            
         }
+        defer {
+            if draw {
+                previewShapeLanding(true)
+                drawShape(color: getCurrentColor())
+            }
+        }
+        
         x += dx
         if (isShapeColliding()) {
             x -= dx
@@ -561,21 +568,28 @@ var tetrominos = """
     var startx = Int(0)
     var starty = Int(0)
     
+    func modu(_ a: Int, _ b: Int) -> Int {
+        var result = a % b
+        if result < 0 { result += b }
+        return result
+    }
+    
     func rotate(_ steps: Int = 1) {
         previewShapeLanding(false)
         defer { previewShapeLanding(true) }
-        rotation = (rotation + steps) % 4
-        if rotation < 0 { rotation += 4 }
+        
+        rotation = modu(rotation + steps, 4)
         
         if isShapeColliding() {
             
             for i in 0...4 {
-                var collided = move(dx: i)
+                var collided = move(dx: i, draw: false)
                 if !collided { return }
-                collided = move(dx: -i)
+                collided = move(dx: -i, draw: false)
                 if !collided { return }
             }
             
+            rotation = modu(rotation - steps, 4)
         }
         
     }
@@ -661,7 +675,7 @@ var tetrominos = """
         let delay = CGFloat(DispatchTime.now().uptimeNanoseconds - timeSinceTouchBegan) / 10e9
         let avgPixelsPerSecond = dySinceLast / delay
         
-        if (avgPixelsPerSecond < -(gridsize * 250.0) && abs(dy) > 1) {
+        if (avgPixelsPerSecond < -(gridsize * 250.0) && abs(dy) > 1) && abs(dx) == 0 {
             timeSinceTouchBegan = DispatchTime.now().uptimeNanoseconds
             while (down() == false) {}
             return
