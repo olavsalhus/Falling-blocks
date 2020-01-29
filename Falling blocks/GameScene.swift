@@ -18,23 +18,6 @@ class GameScene: SKScene {
     var nextBrickPreviewBoard : [[SKShapeNode]] = [[]]
     var swapBrickPreviewBoard : [[SKShapeNode]] = [[]]
     
-    var timeIntervals = [
-        43.0 / 60.0,
-        38.0 / 60.0,
-        33.0 / 60.0,
-        28.0 / 60.0,
-        23.0 / 60.0,
-        18.0 / 60.0,
-        13.0 / 60.0,
-        8.0 / 60.0,
-        6.0 / 60.0,
-        5.0 / 60.0,
-        4.0 / 60.0,
-        3.0 / 60.0,
-        2.0 / 60.0,
-        1.0 / 60.0
-    ]
-    
     var score = 0
     
     var oldHighScore = UserDefaults.standard.integer(forKey: "highscore")
@@ -47,9 +30,7 @@ class GameScene: SKScene {
             UserDefaults.standard.set(score, forKey: "highscore")
             highscore = score
         }
-        if (guiOption == .ShowScore || guiOption == .ShowScoreAndPreview) {
-            printLabel("\(score)")
-        }
+        printLabel("\(score)")
         updateLevel()
     }
     
@@ -62,111 +43,6 @@ class GameScene: SKScene {
     
     
     
-    var shapes = [
-        [[1, 1],
-         [1, 1]],
-        
-        [[0, 0, 0, 0],
-         [1, 1, 1, 1],
-         [0, 0, 0, 0]],
-        
-        [[0, 0, 1],
-         [1, 1, 1],
-         [0, 0, 0]],
-        
-        [[0, 0, 0],
-         [1, 1, 1],
-         [0, 0, 1]],
-        
-        [[0, 1, 0],
-         [1, 1, 1],
-         [0, 0, 0]],
-        
-        [[1, 1, 0],
-         [0, 1, 1]],
-        
-        [[0, 1, 1],
-         [1, 1, 0]]
-    ]
-    
-var tetrominos = """
---------
-        
-[][][][]
-        
---------
-    []
-[][][]
-        
---------
-        
-[][][]
-    []
---------
-[][]
-  [][]
---------
-  [][]
-[][]
---------
-[][]
-[][]
---------
-  []
-[][][]
-        
---------
-"""
-    
-    // Pentominos mode also uses smaller bricks to make it easier
-    var pentominos =
-"""
-----------|----------
-[]        |[][]
-----------|----------
-          |
-  [][]    |[][][]
-  []      |
-----------|----------
-          |  []
-          |[][][]
-[][][][][]|  []
-          |----------
-          |[][][]
-----------|  []
-          |  []
-[][][]    |----------
-[]  []    |[]
-----------|[][]
-[][][]    |  [][]
-[]        |----------
-[]        |[]
-----------|[][][][]
-          |
-[][][][]  |----------
-[]        |[][]
-----------|[][][]
-[][]      |----------
-[][][]    |[][]
-----------|  [][]
-  [][]    |  []
-[][]      |----------
-  []      |  []
-----------|[][][][]
-          |
-[][][][]  |----------
-  []      |    [][]
-----------|[][][]
-[][]      |----------
-  [][][]  |[][]
-----------|  []
-  [][]    |  [][]
-  []      |----------
-[][]      |
-----------|
-"""
-    
-    var shapeColors : [UIColor] = [.yellow, .cyan, .orange, .blue, .purple, .red, .green]
     
     var rotation = 0
     var currentShape = 0
@@ -455,7 +331,6 @@ var tetrominos = """
     var currentShapes : [Int] = []
     
     func previewShape(_ board:  [[SKShapeNode]]) {
-        if (guiOption != .ShowPreview && guiOption != .ShowScoreAndPreview)  { return }
         for line in board {
             for brickPreview in line {
                 brickPreview.isHidden = true
@@ -611,17 +486,8 @@ var tetrominos = """
     
     var timeSinceLastTouchMove = DispatchTime.now().uptimeNanoseconds
     
-    //var timeOfLastTouchMove = DispatchTime.now()
     
     
-    enum GuiOptions: Int, CaseIterable {
-        case NoScoreOrPreview
-        case ShowScore
-        case ShowPreview
-        case ShowScoreAndPreview
-    }
-    
-    var guiOption = GuiOptions.ShowScoreAndPreview
     var timeOfLastThreeFingerTap = UInt64(0)
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         timeSinceLastTouchMove = DispatchTime.now().uptimeNanoseconds
